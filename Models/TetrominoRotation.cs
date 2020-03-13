@@ -126,7 +126,6 @@ namespace _PAIN__WPF___Tetris.Models
                     });
         }
 
-        // To Do Patterns
         private void InitPatternsJ()
         {
             RotationsNumber = 4;
@@ -136,6 +135,25 @@ namespace _PAIN__WPF___Tetris.Models
                         { 1, 1, 1 },
                         { 0, 0, 0 }
                     });
+            Patterns.Add(new short[,]
+                                {
+                        { 0, 1, 1 },
+                        { 0, 1, 0 },
+                        { 0, 1, 0 }
+                                });
+            Patterns.Add(new short[,]
+                                {
+                        { 0, 0, 0 },
+                        { 1, 1, 1 },
+                        { 0, 0, 1 }
+                                });
+            Patterns.Add(new short[,]
+                                {
+                        { 0, 1, 0 },
+                        { 0, 1, 0 },
+                        { 1, 1, 0 }
+                                });
+
         }
 
         private void InitPatternsS()
@@ -225,7 +243,6 @@ namespace _PAIN__WPF___Tetris.Models
                     });
         }
 
-        // To Do Patterns
         private void InitPatternsL()
         {
             RotationsNumber = 4;
@@ -235,6 +252,24 @@ namespace _PAIN__WPF___Tetris.Models
                         { 1, 1, 1 },
                         { 0, 0, 0 }
                     });
+            Patterns.Add(new short[,]
+                                {
+                        { 0, 1, 0 },
+                        { 0, 1, 0 },
+                        { 0, 1, 1 }
+                                });
+            Patterns.Add(new short[,]
+                                {
+                        { 0, 0, 0 },
+                        { 1, 1, 1 },
+                        { 1, 0, 0 }
+                                });
+            Patterns.Add(new short[,]
+                                {
+                        { 1, 1, 0 },
+                        { 0, 1, 0 },
+                        { 0, 1, 0 }
+                                });
 
         }
     }

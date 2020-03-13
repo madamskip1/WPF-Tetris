@@ -10,6 +10,7 @@
 
         <Grid  x:Name="MainField"/>
         <Grid   x:Name="NextField"/>
+            
         <Button Content="Start" x:Name="Start_Button" Click="Start_Button_Click" HorizontalAlignment="Left" Margin="675,178,0,0" VerticalAlignment="Top" Height="80" Width="151"/>
         <ListView x:Name="ResultsList" Margin="0,0,20,20" Width="213" Height="160" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <ListView.View>
@@ -19,6 +20,25 @@
                 </GridView>
             </ListView.View>
         </ListView>
-
+        <Grid Margin="470,400,0,0" x:Name="RowsClearedGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="4 Rows:"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="3 Rows:"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="2 Rows:"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="1 Rows:"/>
+            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Rows4}"/>
+            <Label Grid.Row="1" Grid.Column="1" Content="{Binding Rows3}"/>
+            <Label Grid.Row="2" Grid.Column="1" Content="{Binding Rows2}"/>
+            <Label Grid.Row="3" Grid.Column="1" Content="{Binding Rows1}"/>
+        </Grid>
     </Grid>
 </Window>

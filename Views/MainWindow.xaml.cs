@@ -30,14 +30,15 @@ namespace _PAIN__WPF___Tetris
             Game = new Models.Game();
             InitEvents();
 
-            SetupMainField(MainField);
-            SetupNextField(NextField);
+            SetupMainField(MainField, Game.Grid.Fields);
+            SetupNextField(NextField, Game.Grid.NextFields);
             TestResults();
 
+            RowsClearedGrid.DataContext = Game.RowsCleared;
 
         }
 
-        private void SetupMainField(Grid grid)
+        private void SetupMainField(Grid grid, Models.Cell[,] cells)
         {
             grid.Margin = new Thickness(20, 20, 0, 0);
 
@@ -65,7 +66,15 @@ namespace _PAIN__WPF___Tetris
                     border.BorderBrush = Brushes.Black;
 
                     TextBlock ctrl = new TextBlock();
-                    ctrl.Background = Brushes.LightBlue;
+
+                    SolidColorBrush brush = new SolidColorBrush();
+                    System.Drawing.Color drawingColor = Models.Tetromino.getShapeColor(Models.Tetromino.Shapes.O);
+                    brush.Color = Color.FromArgb(drawingColor.A, drawingColor.R, drawingColor.G, drawingColor.B);
+
+
+                    ctrl.Background = brush;
+                    ctrl.DataContext = cells[x, y];
+                    BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding("Color"));
                     border.Child = ctrl;
 
                     Grid.SetRow(border, y);
@@ -75,9 +84,9 @@ namespace _PAIN__WPF___Tetris
             }
         }
 
-        private void SetupNextField(Grid grid)
+        private void SetupNextField(Grid grid, Models.Cell[,] cells)
         {
-            grid.Margin = new Thickness((ViewModels.ViewModelGame.CELL_SIZE * (Models.Grid.WIDTH + 3)) , 20, 0, 0);
+            grid.Margin = new Thickness((ViewModels.ViewModelGame.CELL_SIZE * (Models.Grid.WIDTH + 3)), 20, 0, 0);
 
             // Add rows
             for (int i = 0; i < ViewModels.ViewModelNext.SIZE; i++)
@@ -94,17 +103,25 @@ namespace _PAIN__WPF___Tetris
                 });
 
 
-            for (int y = 0; y < Models.Grid.HEIGHT; y++)
+            for (int y = 0; y < Models.Grid.NEXT_HEIGHT; y++)
             {
-                for (int x = 0; x < Models.Grid.WIDTH; x++)
+                for (int x = 0; x < Models.Grid.NEXT_WIDTH; x++)
                 {
                     Border border = new Border();
                     border.BorderThickness = new Thickness(1);
                     border.BorderBrush = Brushes.Black;
 
+                    SolidColorBrush brush = new SolidColorBrush();
+                    System.Drawing.Color drawingColor = Models.Tetromino.getShapeColor(Models.Tetromino.Shapes.O);
+                    brush.Color = Color.FromArgb(drawingColor.A, drawingColor.R, drawingColor.G, drawingColor.B);
+
                     TextBlock ctrl = new TextBlock();
-                    ctrl.Background = Brushes.LightBlue;
+                    ctrl.Background = brush;
+                    ctrl.DataContext = cells[x, y];
+                    BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding("Color"));
                     border.Child = ctrl;
+                    ctrl.DataContext = cells[x, y];
+
 
                     Grid.SetRow(border, y);
                     Grid.SetColumn(border, x);
@@ -118,7 +135,7 @@ namespace _PAIN__WPF___Tetris
         {
             this.KeyDown += (sender, e) =>
             {
-                switch(e.Key)
+                switch (e.Key)
                 {
                     case Key.Left:
                         Game.KeyDown(Models.Game.Keys.LEFT);
@@ -146,14 +163,14 @@ namespace _PAIN__WPF___Tetris
         public void TestResults()
         {
             Models.Results result = Models.Results.Instance;
-            
+
             result.AddResult(234, DateTime.Now);
             result.AddResult(1230, DateTime.Now);
             result.AddResult(20, DateTime.Now);
 
 
             ResultsList.ItemsSource = result.ResultsValues;
-            
+
         }
 
         private void Start_Button_Click(object sender, RoutedEventArgs e)
@@ -161,7 +178,5 @@ namespace _PAIN__WPF___Tetris
             Game.Start();
         }
     }
-
-
 
 }

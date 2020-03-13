@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+using System.Collections.Generic;   
 using System.Text;
+using System.Drawing;
 
 namespace _PAIN__WPF___Tetris.Models
 {
@@ -23,7 +23,7 @@ namespace _PAIN__WPF___Tetris.Models
             Rotation = new TetrominoRotation(Shape);
         }
 
-        public static Color getShapeColor(Shapes _shape)
+        public static Color getShapeColor(Shapes? _shape)
         {
             switch(_shape)
             {
@@ -36,7 +36,14 @@ namespace _PAIN__WPF___Tetris.Models
                 case Tetromino.Shapes.L: return Color.Orange;
             }
 
-            throw new Exception("Unknown Shape");
+            return Color.LightBlue;
+        }
+
+        public static System.Windows.Media.Color getShapeMediaColor(Shapes? _shape)
+        {
+            Color color = getShapeColor(_shape);
+
+            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         private Position StartPosition()
