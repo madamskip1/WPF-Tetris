@@ -6,30 +6,31 @@ namespace _PAIN__WPF___Tetris.Models
 {
     class TetrominoRotation
     {
-        public short RotationCounter { get; private set; }
-        public short[,] Pattern { get; private set; }
+        public int RotationCounter { get; private set; }
+        public int[,] Pattern { get; private set; }
 
-        private List<short[,]> Patterns;
-        private short RotationsNumber;
+        private List<int[,]> Patterns;
+        private int RotationsNumber;
         private Tetromino.Shapes Shape;
 
         private TetrominoRotation() { }
 
         public TetrominoRotation(Tetromino.Shapes shape)
         {
-            Patterns = new List<short[,]>();
+            Patterns = new List<int[,]>();
             Shape = shape;
             RotationCounter = 0;
             InitPatterns();
+            Pattern = Patterns[0];
         }
 
 
-        public short[,] GetCurPattern()
+        public int[,] GetCurPattern()
         {
-            return Patterns[RotationCounter];
+            return Pattern;
         }
 
-        public short[,] GetNextPattern()
+        public int[,] GetNextPattern()
         {
             return Patterns[NextPatternNumber()];
         }
@@ -40,17 +41,32 @@ namespace _PAIN__WPF___Tetris.Models
             Pattern = Patterns[RotationCounter];
         }
 
-        public List<short> GetRows()
+        public List<int> RowsToCheck()
         {
-            return new List<short>();
+            List<int> rows = new List<int>();
+
+            int patternHeight = Pattern.GetLength(0);
+            int patternWidth = Pattern.GetLength(1);
+
+            for (int y = 0; y < patternHeight; y++)
+            {
+                for (int x = 0; x < patternWidth; x++)
+                    if (Pattern[y, x] == 1)
+                    {
+                        rows.Add(y);
+                        break;
+                    }
+            }
+
+            return rows;
         }
 
-        private short NextPatternNumber()
+        private int NextPatternNumber()
         {
             if (RotationCounter == (RotationsNumber - 1))
                 return 0;
             else
-                return (short)(RotationCounter + 1);
+                return (RotationCounter + 1);
         }
 
 
@@ -85,7 +101,7 @@ namespace _PAIN__WPF___Tetris.Models
         private void InitPatternsO()
         {
             RotationsNumber = 1;
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
             {
                 { 1, 1 },
                 { 1, 1 }
@@ -96,28 +112,28 @@ namespace _PAIN__WPF___Tetris.Models
         private void InitPatternsI()
         {
             RotationsNumber = 4;
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 0, 0 },
                         { 1, 1, 1, 1 },
                         { 0, 0, 0, 0 },
                         { 0, 0, 0, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 1, 0 },
                         { 0, 0, 1, 0 },
                         { 0, 0, 1, 0 },
                         { 0, 0, 1, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 0, 0 },
                         { 0, 0, 0, 0 },
                         { 1, 1, 1, 1 },
                         { 0, 0, 0, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 1, 0, 0 },
                         { 0, 1, 0, 0 },
@@ -129,25 +145,25 @@ namespace _PAIN__WPF___Tetris.Models
         private void InitPatternsJ()
         {
             RotationsNumber = 4;
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 1, 0, 0 },
                         { 1, 1, 1 },
                         { 0, 0, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                                 {
                         { 0, 1, 1 },
                         { 0, 1, 0 },
                         { 0, 1, 0 }
                                 });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                                 {
                         { 0, 0, 0 },
                         { 1, 1, 1 },
                         { 0, 0, 1 }
                                 });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                                 {
                         { 0, 1, 0 },
                         { 0, 1, 0 },
@@ -159,25 +175,25 @@ namespace _PAIN__WPF___Tetris.Models
         private void InitPatternsS()
         {
             RotationsNumber = 4;
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 1, 1 },
                         { 1, 1, 0 },
                         { 0, 0, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 1, 0 },
                         { 0, 1, 1 },
                         { 0, 0, 1 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 0 },
                         { 0, 1, 1 },
                         { 1, 1, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 1, 0, 0 },
                         { 1, 1, 0 },
@@ -188,54 +204,54 @@ namespace _PAIN__WPF___Tetris.Models
         private void InitPatternsZ()
         {
             RotationsNumber = 4;
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 1, 1, 0 },
                         { 0, 1, 1 },
                         { 0, 0, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 1 },
                         { 0, 1, 1 },
                         { 0, 1, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 0 },
                         { 1, 1, 0 },
                         { 0, 1, 1 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 1, 0 },
-                        { 0, 1, 0 },
-                        { 1, 1, 0 }
+                        { 1, 1, 0 },
+                        { 1, 0, 0 }
                     });
         }
 
         private void InitPatternsT()
         {
             RotationsNumber = 4;
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 1, 0 },
                         { 1, 1, 1 },
                         { 0, 0, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 1, 0 },
                         { 0, 1, 1 },
                         { 0, 1, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 0 },
                         { 1, 1, 1 },
                         { 0, 1, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 1, 0 },
                         { 1, 1, 0 },
@@ -246,25 +262,25 @@ namespace _PAIN__WPF___Tetris.Models
         private void InitPatternsL()
         {
             RotationsNumber = 4;
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                     {
                         { 0, 0, 1 },
                         { 1, 1, 1 },
                         { 0, 0, 0 }
                     });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                                 {
                         { 0, 1, 0 },
                         { 0, 1, 0 },
                         { 0, 1, 1 }
                                 });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                                 {
                         { 0, 0, 0 },
                         { 1, 1, 1 },
                         { 1, 0, 0 }
                                 });
-            Patterns.Add(new short[,]
+            Patterns.Add(new int[,]
                                 {
                         { 1, 1, 0 },
                         { 0, 1, 0 },

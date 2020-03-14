@@ -7,11 +7,11 @@ namespace _PAIN__WPF___Tetris.Models
 {
     class Grid
     {
-        public const short WIDTH = 10;
-        public const short HEIGHT = 20;
+        public const int WIDTH = 10;
+        public const int HEIGHT = 20;
 
-        public const short NEXT_WIDTH = 4;
-        public const short NEXT_HEIGHT = 4;
+        public const int NEXT_WIDTH = 4;
+        public const int NEXT_HEIGHT = 4;
 
         public Cell[,] Fields { get; private set; }
         public Cell[,] NextFields { get; private set; }
@@ -21,7 +21,6 @@ namespace _PAIN__WPF___Tetris.Models
             Fields = new Cell[WIDTH, HEIGHT];
             NextFields = new Cell[NEXT_WIDTH, NEXT_HEIGHT];
             PrepareGrids();
-            ClearGrid();
         }
 
         public void Test()
@@ -36,12 +35,14 @@ namespace _PAIN__WPF___Tetris.Models
             Fields[0,0].Shape = Tetromino.Shapes.J;
         }
 
+
         public void SetNextTetromino(Tetromino tetromino)
         {
+            // Clear Next Tetromino Grid
             foreach (Cell cell in NextFields)
                 cell.Shape = null;
 
-            short[,] pattern = tetromino.Rotation.GetCurPattern();
+            int[,] pattern = tetromino.Rotation.GetCurPattern();
             int patternHeight = pattern.GetLength(0);
             int patternWidth = pattern.GetLength(1);
 
@@ -55,47 +56,57 @@ namespace _PAIN__WPF___Tetris.Models
             }
         }
 
-        public Cell GetField(short x, short y)
+
+
+        public Cell GetField(int x, int y)
         {
             return Fields[x, y];
         }
 
-        public bool IsEmptyField(short x, short y)
+
+
+        public bool IsEmptyField(int x, int y)
         {
-            if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || GetField(x, y).Shape != null)
+            if (GetField(x, y).Shape != null)
                 return false;
 
             return true;
         }
 
-        private void SetField(short x, short y, Tetromino.Shapes? shape)
+        private void SetField(int x, int y, Tetromino.Shapes? shape)
         {
             Fields[x, y].Shape = shape;
         }
 
-        public bool CanFitTetromino(Position pos, short[,] pattern)
+
+
+        public bool CanFitTetromino(Position pos, int[,] pattern)
         {
             int patternHeight = pattern.GetLength(0);
             int patternWidth = pattern.GetLength(1);
             int posX = pos.X;
             int posY = pos.Y;
+
             for (int x = 0; x < patternWidth; x++)
             {
                 for (int y = 0; y < patternHeight; y++)
                 {
-                    if (pattern[y, x] == 1 && !IsEmptyField((short)posX, (short)posY))
+                    if (pattern[y, x] == 1 && (posX < 0 || posX >= WIDTH || posY >= HEIGHT || (posY >= 0 && !IsEmptyField(posX, posY))))
                         return false;
 
                     posY++;
                 }
+
                 posX++;
                 posY = pos.Y;
-
             }
-                    return true;
+
+            return true;
         }
 
-        public void SetTetromino(Position pos, short[,] pattern, Tetromino.Shapes? shape)
+
+
+        public void SetTetromino(Position pos, int[,] pattern, Tetromino.Shapes? shape)
         {
             int patternHeight = pattern.GetLength(0);
             int patternWidth = pattern.GetLength(1);
@@ -104,26 +115,29 @@ namespace _PAIN__WPF___Tetris.Models
             {
                 for (int y = 0; y < patternHeight; y++)
                 {
-                    if (pattern[y, x] != 0)
-                        Fields[(x + pos.X), (y + pos.Y)].Shape = shape;
+                    if (pattern[y, x] != 0 && (y + pos.Y) >= 0)           // ZASTANOWIC SIĘ
+                        SetField((x + pos.X), (y + pos.Y), shape);
                 }
             }
         }
 
-        public void RemoveTetromino(Position pos, short[,] pattern)
+
+
+
+        public void RemoveTetromino(Position pos, int[,] pattern)
         {
             SetTetromino(pos, pattern, null);
         }
 
-        public int ClearRows(short startY, List<short> rows)
+        public int ClearRows(int startY, List<int> rows)
         {
             int rowsCleaned = 0;
-            foreach(short y in rows)
+            foreach(int y in rows)
             {
-                if (CheckRow((short)(startY + y)))
+                if (CheckRow((startY + y)))
                 {
                     rowsCleaned++;
-                    MoveRows((short)(startY + y));
+                    MoveRows((startY + y));
                     ClearRow(0);
                 }
             }
@@ -131,9 +145,13 @@ namespace _PAIN__WPF___Tetris.Models
             return rowsCleaned;
         }
 
-        private bool CheckRow(short y)
+
+        private bool CheckRow(int y)
         {
-            for (short x = 0; x < WIDTH; x++)
+            if (y < 0)
+                return false;
+
+            for (int x = 0; x < WIDTH; x++)
             {
                 if (Fields[x, y].Shape == null)
                     return false;
@@ -141,52 +159,48 @@ namespace _PAIN__WPF___Tetris.Models
             return true;
         }
 
-        private void ClearRow(short y)
+
+        private void ClearRow(int y)
         {
-            for (short x = 0; x < WIDTH; x++)
-                Fields[x, y].Shape = null;
+            for (int x = 0; x < WIDTH; x++)
+                SetField(x, y, null);
         }
 
-        private void MoveRows(short y)
+
+        private void MoveRows(int y)
         {
-            for (short i = y; i > 0; i--)
+            for (int i = y; i > 0; i--)
             {
-                for (short x = 0; x < WIDTH; x++)
-                    Fields[x, i].Shape = Fields[x, i - 1].Shape;
+                for (int x = 0; x < WIDTH; x++)
+                    SetField(x, i, GetField(x, i - 1).Shape);
             }
         }
 
         public void ClearGrid()
         {
-            for (short x = 0; x < WIDTH; x++)
+            for (int x = 0; x < WIDTH; x++)
             {
-                for (short y = 0; y < HEIGHT; y++)
-                {
-                    Fields[x, y].Shape = null;
-                }
+                for (int y = 0; y < HEIGHT; y++)
+                    SetField(x, y, null);
             }
 
         }
+
+
         public void PrepareGrids()
         {
             // MAIN GRID
-            for (short x = 0; x < WIDTH; x++)
+            for (int x = 0; x < WIDTH; x++)
             {
-                for (short y = 0; y < HEIGHT; y++)
-                {
+                for (int y = 0; y < HEIGHT; y++)
                     Fields[x, y] = new Cell();
-                    Fields[x, y].Shape = null;
-                }
             }
 
             // NEXT GRID
-            for (short x = 0; x < NEXT_WIDTH; x++)
+            for (int x = 0; x < NEXT_WIDTH; x++)
             {
-                for (short y = 0; y< NEXT_HEIGHT; y++)
-                {
+                for (int y = 0; y< NEXT_HEIGHT; y++)
                     NextFields[x, y] = new Cell();
-                    NextFields[x, y].Shape = null;
-                }
             }
         }
     }

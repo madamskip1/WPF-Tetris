@@ -1,42 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace _PAIN__WPF___Tetris.Models
 {
     class Results
     {
-        public List<ResultObject> ResultsValues;
+        public ObservableCollection<ResultObject> ResultsValues;
 
-        private static Results _instance;
-
-        private Results()
+        public Results()
         {
-            ResultsValues = new List<ResultObject>();
+            ResultsValues = new ObservableCollection<ResultObject>();
         }
 
-        public static Results Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new Results();
-
-                return _instance;
-            }
-        }
 
         public void AddResult(int result, DateTime dateTime)
         {
             ResultsValues.Add(new ResultObject(result, dateTime));
 
+
+            List<ResultObject> list = ResultsValues.ToList();
+            list.Sort((a, b) => b.Result.CompareTo(a.Result));
+            ResultsValues.Clear();
+            foreach (var item in list)
+                ResultsValues.Add(item);
+            // ResultsValues = new ObservableCollection<ResultObject>(ResultsValues.OrderBy(x => x.Result));
             // sort DESC
-            ResultsValues.Sort((a, b) => b.Result.CompareTo(a.Result));
+            //*//   ResultsValues.
         }
 
-        public List<ResultObject> GetBestResults(int bestOf = 5)
+        public ObservableCollection<ResultObject> GetBestResults(int bestOf = 5)
         {
-            return ResultsValues.GetRange(0, bestOf);
+            return ResultsValues;
+            //return ResultsValues.GetRange(0, bestOf);
         }
     }
 

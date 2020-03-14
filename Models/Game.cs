@@ -15,7 +15,7 @@ namespace _PAIN__WPF___Tetris.Models
         private Tetromino Next { get; set; }
         public Grid Grid { get; set; }
         public RowsCleared RowsCleared;
-
+        private Results Results;
         private readonly Random Random;
 
         private DateTime previouseDateTime;
@@ -25,30 +25,50 @@ namespace _PAIN__WPF___Tetris.Models
         public enum MoveDirection { LEFT, RIGHT }
         public enum Keys { LEFT, RIGHT, UP, DOWN, SPACE, ESC }
 
+        public enum GameStates { NOTSTARTED, RUNNING, GAMEOVER }
+        private GameStates GameState;
+
         public Game()
         {
-            
             Grid = new Grid();
+            GameState = GameStates.NOTSTARTED;
             Random = new Random();
-            Cur = new Tetromino(Tetromino.Shapes.O);
-            Cur.Position.X = 8;
-            Cur.Position.Y = 14;
             RowsCleared = new RowsCleared();
         }
 
-
+        public void SetResults(Results results)
+        {
+            Results = results;
+        }
         public void KeyDown(Keys key/* key */)
         {
             if (key == Keys.UP)
-                TetrominoRotation();
+            {
+                if (IsGameState(GameStates.RUNNING))
+                    TetrominoRotation();
+            }
             else if (key == Keys.LEFT)
-                TetrominoMove(MoveDirection.LEFT);
+            {
+                if (IsGameState(GameStates.RUNNING))
+                    TetrominoMove(MoveDirection.LEFT);
+            }
             else if (key == Keys.RIGHT)
-                TetrominoMove(MoveDirection.RIGHT);
+            {
+                if (IsGameState(GameStates.RUNNING))
+                    TetrominoMove(MoveDirection.RIGHT);
+            }
             else if (key == Keys.DOWN)
-                TetrominoSingleRowDown();
+            {
+                if (IsGameState(GameStates.RUNNING))
+                    TetrominoSingleRowDown();
+            }
             else if (key == Keys.SPACE)
-                TetrominoDown();
+            {
+                if (GameState == GameStates.RUNNING)
+                    TetrominoDown();
+                else if (GameState == GameStates.NOTSTARTED || GameState == GameStates.GAMEOVER)
+                    Start();
+            }
         }
 
         private Tetromino RandomTetromino()
@@ -58,38 +78,40 @@ namespace _PAIN__WPF___Tetris.Models
             return new Tetromino(shape);
         }
 
+
         public void Start()
         {
             Grid.ClearGrid();
             Cur = RandomTetromino();
             Next = RandomTetromino();
+            //PlaceTetromino();
+            DrawTetromino();
             Grid.SetNextTetromino(Next);
+            RowsCleared.Reset();
 
+            GameState = GameStates.RUNNING;
             previouseDateTime = DateTime.Now;
             MainLoop();
         }
 
+
+
         private async void MainLoop()
         {
-            while (IsRunning())
+            while (GameState == GameStates.RUNNING)
             {
                 TimeSpan delta = DateTime.Now - previouseDateTime;
                 Delta += delta;
 
                 if (Delta >= Speed)
-                {
                     TetrominoSingleRowDown();
-                }
 
                 previouseDateTime += delta;
                 await Task.Delay(8);
             }
         }
 
-        private bool IsRunning()
-        {
-            return true;
-        }
+
 
         private void TetrominoMove(MoveDirection dir)
         {
@@ -105,21 +127,25 @@ namespace _PAIN__WPF___Tetris.Models
             if (Grid.CanFitTetromino(newPosition, Cur.Rotation.GetCurPattern()))
                 Cur.Position = newPosition;
 
-            PlaceTetromino();
+            DrawTetromino();
         }
+
+
+
 
         // Rotate Cur Tetromino
         private void TetrominoRotation()
         {
-            short[,] newPattern = Cur.Rotation.GetNextPattern();
+            int[,] newPattern = Cur.Rotation.GetNextPattern();
             RemoveTetrominoFromGrid();
             if (Grid.CanFitTetromino(Cur.Position, newPattern))
-            {
                 Cur.Rotation.SetNextPattern();
-                
-            }
-            PlaceTetromino();
+
+            DrawTetromino();
         }
+
+
+
 
         // Move Cur Tetromino one rown down
         private void TetrominoSingleRowDown()
@@ -131,23 +157,25 @@ namespace _PAIN__WPF___Tetris.Models
             {
 
                 Delta = TimeSpan.Zero;
-                // DRAW
-
                 Cur.Position = newPosition;
-                PlaceTetromino();
+                DrawTetromino();
             }
             else
             {
                 PlaceTetromino();
-                CheckRows();
-                NextTetromino();
-                
+                if (CheckGameOver())
+                    GameOver();
+                else
+                    NextTetromino();
             }
         }
+
+
 
         // place Cur Tetromino as low as possible
         private void TetrominoDown()
         {
+            RemoveTetrominoFromGrid();
             Position newPosition = new Position(Cur.Position.X, Cur.Position.Y + 1);
 
             while (Grid.CanFitTetromino(newPosition, Cur.Rotation.GetCurPattern()))
@@ -157,28 +185,33 @@ namespace _PAIN__WPF___Tetris.Models
 
             Cur.Position = newPosition;
             PlaceTetromino();
+            if (CheckGameOver())
+                GameOver();
+            else
+                NextTetromino();
         }
+
+
+        private bool CheckGameOver()
+        {
+            return Cur.GetTopPosition() < 0;
+        }
+
 
         private void RemoveTetrominoFromGrid()
         {
             Grid.RemoveTetromino(Cur.Position, Cur.Rotation.GetCurPattern());
         }
 
-        private void RotateTetromino()
-        {
-            Cur.Rotation.SetNextPattern();
-        }
-
 
         private void PlaceTetromino()
         {
+            DrawTetromino();
+            List<int> rows = Cur.Rotation.RowsToCheck();
+
             Grid.SetTetromino(Cur.Position, Cur.Rotation.GetCurPattern(), Cur.Shape);
-            Grid.ClearRows((short)Cur.Position.Y, Cur.Rotation.GetRows());
-
-            // Następny tetromino TODO
-            //  DRAW
-            Delta = TimeSpan.Zero;
-
+            int numberOfRowsCleared = Grid.ClearRows(Cur.Position.Y, rows);
+            RowsCleared.Cleared(numberOfRowsCleared);
         }
 
         private void NextTetromino()
@@ -188,29 +221,23 @@ namespace _PAIN__WPF___Tetris.Models
             Grid.SetNextTetromino(Next);
         }
 
-        private void CheckRows()
+        private void GameOver()
         {
-            // Start Y = pos.Y
-            List<short> rows = new List<short>();
-            short[,] pattern = Cur.Rotation.GetCurPattern();
-            int patternHeight = pattern.GetLength(0);
-            int patternWidth = pattern.GetLength(1);
+            GameState = GameStates.GAMEOVER;
+            MessageBox.Show("Game Over, Leszczu");
 
-            for (int y = 0; y < patternHeight; y++)
-            {
-                for (int x = 0; x < patternWidth; x++)
-                {
-                    if (pattern[y, x] == 1)
-                    {
-                        rows.Add((short)y);
-                        break;
-                    }
-                }
-            }
-
-            int rowsCleared = Grid.ClearRows((short)Cur.Position.Y, rows);
-            RowsCleared.Cleared(rowsCleared);
+            Results.AddResult(RowsCleared.TotalPoints, DateTime.Now);
         }
 
+        private void DrawTetromino()
+        {
+            Grid.SetTetromino(Cur.Position, Cur.Rotation.GetCurPattern(), Cur.Shape);
+        }
+
+
+        private bool IsGameState(GameStates state)
+        {
+            return GameState == state;
+        }
     }
 }

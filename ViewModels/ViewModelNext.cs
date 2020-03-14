@@ -8,7 +8,6 @@ namespace _PAIN__WPF___Tetris.ViewModels
     {
 
         public const int SIZE = 4;
-        private int[,] Dupa;
 
         public ViewModelNext()
         {

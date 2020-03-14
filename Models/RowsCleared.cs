@@ -14,6 +14,14 @@ namespace _PAIN__WPF___Tetris.Models
         public int Rows3 { get; private set; }
         public int Rows4 { get; private set; }
 
+        public int TotalPoints
+        {
+            get
+            {
+                return Rows1 + Rows2 * 2 + Rows3 * 3 + Rows4 * 4;
+            }
+        }
+
         public RowsCleared()
         {
             Reset();
@@ -38,6 +46,7 @@ namespace _PAIN__WPF___Tetris.Models
             }
 
             OnPropertyChanged(rowsNumber);
+            OnPropertyChanged(0);
         }
 
         public void Reset()
@@ -46,11 +55,15 @@ namespace _PAIN__WPF___Tetris.Models
             Rows2 = 0;
             Rows3 = 0;
             Rows4 = 0;
+            for (int i = 0; i <= 4; i++)
+                OnPropertyChanged(i);
         }
 
         private void OnPropertyChanged(int rowsNumber)
         {
             string property = "Rows" + rowsNumber;
+            if (rowsNumber == 0) property = "TotalPoints";
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }

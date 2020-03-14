@@ -22,12 +22,18 @@ namespace _PAIN__WPF___Tetris
     {
 
         private Models.Game Game;
+        private Models.Results Results;
 
         public MainWindow()
         {
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             InitializeComponent();
             Game = new Models.Game();
+            Results = new Models.Results();
+            Game.SetResults(Results);
+            ResultsList.ItemsSource = Results.ResultsValues;
+
             InitEvents();
 
             SetupMainField(MainField, Game.Grid.Fields);
@@ -162,21 +168,18 @@ namespace _PAIN__WPF___Tetris
 
         public void TestResults()
         {
-            Models.Results result = Models.Results.Instance;
-
-            result.AddResult(234, DateTime.Now);
-            result.AddResult(1230, DateTime.Now);
-            result.AddResult(20, DateTime.Now);
-
-
-            ResultsList.ItemsSource = result.ResultsValues;
+            Results.AddResult(234, DateTime.Now);
+            Results.AddResult(1230, DateTime.Now);
+            Results.AddResult(20, DateTime.Now);
 
         }
 
         private void Start_Button_Click(object sender, RoutedEventArgs e)
         {
+            MainField.Focus();
             Game.Start();
         }
+
     }
 
 }

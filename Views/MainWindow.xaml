@@ -1,18 +1,17 @@
-﻿<Window x:Class="_PAIN__WPF___Tetris.MainWindow"
+﻿<Window x:Name="window" x:Class="_PAIN__WPF___Tetris.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_PAIN__WPF___Tetris"
         mc:Ignorable="d"
-        Title="MainWindow" Height="531" Width="892">
+        Title="Tetris" Height="490" Width="450" MinWidth="{Binding Width, ElementName=window}" MinHeight="{Binding Height, ElementName=window}" MaxWidth="{Binding Width, ElementName=window}" MaxHeight="{Binding Height, ElementName=window}">
     <Grid>
 
         <Grid  x:Name="MainField"/>
-        <Grid   x:Name="NextField"/>
-            
-        <Button Content="Start" x:Name="Start_Button" Click="Start_Button_Click" HorizontalAlignment="Left" Margin="675,178,0,0" VerticalAlignment="Top" Height="80" Width="151"/>
-        <ListView x:Name="ResultsList" Margin="0,0,20,20" Width="213" Height="160" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+        <Grid   x:Name="NextField" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <ListView Focusable="False" x:Name="ResultsList" Margin="240,280,0,0" Width="180" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Points" DisplayMemberBinding="{Binding Result}"/>
@@ -20,7 +19,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Grid Margin="470,400,0,0" x:Name="RowsClearedGrid">
+        <Grid Margin="260,130,0,0" x:Name="RowsClearedGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
@@ -30,15 +29,18 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Content="4 Rows:"/>
-            <Label Grid.Row="1" Grid.Column="0" Content="3 Rows:"/>
-            <Label Grid.Row="2" Grid.Column="0" Content="2 Rows:"/>
-            <Label Grid.Row="3" Grid.Column="0" Content="1 Rows:"/>
-            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Rows4}"/>
-            <Label Grid.Row="1" Grid.Column="1" Content="{Binding Rows3}"/>
-            <Label Grid.Row="2" Grid.Column="1" Content="{Binding Rows2}"/>
-            <Label Grid.Row="3" Grid.Column="1" Content="{Binding Rows1}"/>
+            <Label Grid.Row="0" Grid.Column="0" Content="Total Points:"/>
+            <Label Grid.Row="0" Grid.Column="1" Content="{Binding TotalPoints}"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="4 Rows:"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="3 Rows:"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="2 Rows:"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="1 Rows:"/>
+            <Label Grid.Row="1" Grid.Column="1" Content="{Binding Rows4}"/>
+            <Label Grid.Row="2" Grid.Column="1" Content="{Binding Rows3}"/>
+            <Label Grid.Row="3" Grid.Column="1" Content="{Binding Rows2}"/>
+            <Label Grid.Row="4" Grid.Column="1" Content="{Binding Rows1}"/>
         </Grid>
     </Grid>
 </Window>
