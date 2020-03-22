@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace _PAIN__WPF___Tetris
 {
@@ -29,93 +21,66 @@ namespace _PAIN__WPF___Tetris
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             InitializeComponent();
-            Game = new Models.Game();
+
+            Game = new Models.Game(this);
             Results = new Models.Results();
             Game.SetResults(Results);
             ResultsList.ItemsSource = Results.ResultsValues;
 
-            InitEvents();
+            InitKeyDownEvents();
 
-            SetupMainField(MainField, Game.Grid.Fields);
-            SetupNextField(NextField, Game.Grid.NextFields);
+            PrepareField(MainField, Game.Grid.Fields, new Thickness(20, 20, 0, 0), ViewModels.ViewModelGame.WIDTH, ViewModels.ViewModelGame.HEIGHT);
+            Thickness NextFieldThickness = new Thickness(ViewModels.ViewModelGame.CELL_SIZE * (Models.Grid.WIDTH + 3), 20, 0, 0);
+            PrepareField(NextField, Game.Grid.NextFields, NextFieldThickness, ViewModels.ViewModelNext.WIDTH, ViewModels.ViewModelNext.HEIGHT);
+
+
             TestResults();
 
             RowsClearedGrid.DataContext = Game.RowsCleared;
 
         }
 
-        private void SetupMainField(Grid grid, Models.Cell[,] cells)
+        public void SetMainInfoText(string text)
         {
-            grid.Margin = new Thickness(20, 20, 0, 0);
-
-            // Add rows
-            for (int i = 0; i < Models.Grid.HEIGHT; i++)
-                grid.RowDefinitions.Add(new RowDefinition
-                {
-                    Height = new GridLength(ViewModels.ViewModelGame.CELL_SIZE)
-                });
-
-            // Add Cols
-            for (int i = 0; i < Models.Grid.WIDTH; i++)
-                grid.ColumnDefinitions.Add(new ColumnDefinition
-                {
-                    Width = new GridLength(ViewModels.ViewModelGame.CELL_SIZE)
-                });
-
-
-            for (int y = 0; y < Models.Grid.HEIGHT; y++)
-            {
-                for (int x = 0; x < Models.Grid.WIDTH; x++)
-                {
-                    Border border = new Border();
-                    border.BorderThickness = new Thickness(1);
-                    border.BorderBrush = Brushes.Black;
-
-                    TextBlock ctrl = new TextBlock();
-
-                    SolidColorBrush brush = new SolidColorBrush();
-                    System.Drawing.Color drawingColor = Models.Tetromino.getShapeColor(Models.Tetromino.Shapes.O);
-                    brush.Color = Color.FromArgb(drawingColor.A, drawingColor.R, drawingColor.G, drawingColor.B);
-
-
-                    ctrl.Background = brush;
-                    ctrl.DataContext = cells[x, y];
-                    BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding("Color"));
-                    border.Child = ctrl;
-
-                    Grid.SetRow(border, y);
-                    Grid.SetColumn(border, x);
-                    grid.Children.Add(border);
-                }
-            }
+            MainInfo.Text = text;
         }
 
-        private void SetupNextField(Grid grid, Models.Cell[,] cells)
+        public void SetInfoVisibility(bool visibility)
         {
-            grid.Margin = new Thickness((ViewModels.ViewModelGame.CELL_SIZE * (Models.Grid.WIDTH + 3)), 20, 0, 0);
+            InfoGrid.Visibility = (visibility ? Visibility.Visible : Visibility.Hidden);
+        }
+
+        private void PrepareField(Grid grid, Models.Cell[,] cells, Thickness margin, int Width, int Height)
+        {
+            grid.Margin = margin;
 
             // Add rows
-            for (int i = 0; i < ViewModels.ViewModelNext.SIZE; i++)
+            for (int i = 0; i < Height; i++)
                 grid.RowDefinitions.Add(new RowDefinition
                 {
                     Height = new GridLength(ViewModels.ViewModelGame.CELL_SIZE)
                 });
 
-            // Add Cols
-            for (int i = 0; i < ViewModels.ViewModelNext.SIZE; i++)
+            // Add cols
+            for (int i = 0; i < Width; i++)
                 grid.ColumnDefinitions.Add(new ColumnDefinition
                 {
                     Width = new GridLength(ViewModels.ViewModelGame.CELL_SIZE)
                 });
+            
 
-
-            for (int y = 0; y < Models.Grid.NEXT_HEIGHT; y++)
+            for (int y = 0; y < Height; y++)
             {
-                for (int x = 0; x < Models.Grid.NEXT_WIDTH; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     Border border = new Border();
                     border.BorderThickness = new Thickness(1);
-                    border.BorderBrush = Brushes.Black;
+                    SolidColorBrush borderBr = new SolidColorBrush();
+                    borderBr.Color = ViewModels.ViewModelGame.BorderColor;
+                    border.BorderBrush = borderBr;
+
+
+                    
 
                     SolidColorBrush brush = new SolidColorBrush();
                     System.Drawing.Color drawingColor = Models.Tetromino.getShapeColor(Models.Tetromino.Shapes.O);
@@ -126,18 +91,18 @@ namespace _PAIN__WPF___Tetris
                     ctrl.DataContext = cells[x, y];
                     BindingOperations.SetBinding(brush, SolidColorBrush.ColorProperty, new Binding("Color"));
                     border.Child = ctrl;
-                    ctrl.DataContext = cells[x, y];
-
 
                     Grid.SetRow(border, y);
                     Grid.SetColumn(border, x);
                     grid.Children.Add(border);
                 }
             }
+
+
         }
 
 
-        private void InitEvents()
+        private void InitKeyDownEvents()
         {
             this.KeyDown += (sender, e) =>
             {
@@ -166,20 +131,13 @@ namespace _PAIN__WPF___Tetris
         }
 
 
-        public void TestResults()
+        private void TestResults()
         {
             Results.AddResult(234, DateTime.Now);
             Results.AddResult(1230, DateTime.Now);
             Results.AddResult(20, DateTime.Now);
 
         }
-
-        private void Start_Button_Click(object sender, RoutedEventArgs e)
-        {
-            MainField.Focus();
-            Game.Start();
-        }
-
     }
 
 }

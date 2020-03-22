@@ -9,6 +9,7 @@ namespace _PAIN__WPF___Tetris.ViewModels
         public const int WIDTH = Models.Grid.WIDTH;
         public const int HEIGHT = Models.Grid.HEIGHT;
 
+
         public ViewModelGrid()
         {
         }

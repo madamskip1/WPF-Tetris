@@ -22,13 +22,8 @@ namespace _PAIN__WPF___Tetris.Models
 
         public System.Windows.Media.Color Color
         {
-            get
-            {
-                return Tetromino.getShapeMediaColor(Shape);
-            }
+            get { return Tetromino.getShapeMediaColor(Shape); }
         }
-
-        public Cell() { }
 
         protected void OnPropertyChanged()
         {

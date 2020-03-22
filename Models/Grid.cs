@@ -16,24 +16,13 @@ namespace _PAIN__WPF___Tetris.Models
         public Cell[,] Fields { get; private set; }
         public Cell[,] NextFields { get; private set; }
 
-        public Grid()
+        public Grid(int width = WIDTH, int height = HEIGHT)
         {
-            Fields = new Cell[WIDTH, HEIGHT];
+            Fields = new Cell[width, height];
             NextFields = new Cell[NEXT_WIDTH, NEXT_HEIGHT];
             PrepareGrids();
         }
 
-        public void Test()
-        {
-            Fields[2, 2].Shape = Tetromino.Shapes.T;
-            Fields[5, 7].Shape = Tetromino.Shapes.T;
-        }
-
-        public void Test2()
-        {
-            Fields[9, 9].Shape = Tetromino.Shapes.J;
-            Fields[0,0].Shape = Tetromino.Shapes.J;
-        }
 
 
         public void SetNextTetromino(Tetromino tetromino)
@@ -58,20 +47,47 @@ namespace _PAIN__WPF___Tetris.Models
 
 
 
+        public void ClearGrid()
+        {
+            for (int x = 0; x < WIDTH; x++)
+            {
+                for (int y = 0; y < HEIGHT; y++)
+                    SetField(x, y, null);
+            }
+        }
+
+
+
+        public int ClearRows(int startY, List<int> rows)
+        {
+            int rowsCleaned = 0;
+            foreach (int y in rows)
+            {
+                if (CheckRow((startY + y)))
+                {
+                    rowsCleaned++;
+                    MoveRows((startY + y));
+                    ClearRow(0);
+                }
+            }
+
+            return rowsCleaned;
+        }
+
+
+
+
         public Cell GetField(int x, int y)
         {
             return Fields[x, y];
         }
 
-
-
-        public bool IsEmptyField(int x, int y)
+        private Tetromino.Shapes? GetFieldShape(int x, int y)
         {
-            if (GetField(x, y).Shape != null)
-                return false;
-
-            return true;
+            return Fields[x, y].Shape;
         }
+
+
 
         private void SetField(int x, int y, Tetromino.Shapes? shape)
         {
@@ -80,6 +96,10 @@ namespace _PAIN__WPF___Tetris.Models
 
 
 
+
+
+
+        // Check if Tetromino can fit in cells
         public bool CanFitTetromino(Position pos, int[,] pattern)
         {
             int patternHeight = pattern.GetLength(0);
@@ -105,7 +125,7 @@ namespace _PAIN__WPF___Tetris.Models
         }
 
 
-
+        // Set grid cells to shape with pattern positions
         public void SetTetromino(Position pos, int[,] pattern, Tetromino.Shapes? shape)
         {
             int patternHeight = pattern.GetLength(0);
@@ -123,29 +143,23 @@ namespace _PAIN__WPF___Tetris.Models
 
 
 
-
+        // Remove tetromino from grid => set all pattern positions to null
         public void RemoveTetromino(Position pos, int[,] pattern)
         {
             SetTetromino(pos, pattern, null);
         }
 
-        public int ClearRows(int startY, List<int> rows)
-        {
-            int rowsCleaned = 0;
-            foreach(int y in rows)
-            {
-                if (CheckRow((startY + y)))
-                {
-                    rowsCleaned++;
-                    MoveRows((startY + y));
-                    ClearRow(0);
-                }
-            }
 
-            return rowsCleaned;
+
+        private bool IsEmptyField(int x, int y)
+        {
+            if (GetFieldShape(x, y) != null)
+                return false;
+
+            return true;
         }
 
-
+        // Check if all cells are set in row
         private bool CheckRow(int y)
         {
             if (y < 0)
@@ -153,13 +167,14 @@ namespace _PAIN__WPF___Tetris.Models
 
             for (int x = 0; x < WIDTH; x++)
             {
-                if (Fields[x, y].Shape == null)
+                if (IsEmptyField(x, y))
                     return false;
             }
             return true;
         }
 
 
+        // set all cells to null in row
         private void ClearRow(int y)
         {
             for (int x = 0; x < WIDTH; x++)
@@ -167,27 +182,20 @@ namespace _PAIN__WPF___Tetris.Models
         }
 
 
+        // Move (i + 1) row to i row, after clearing row (all cells set in row)
         private void MoveRows(int y)
         {
             for (int i = y; i > 0; i--)
             {
                 for (int x = 0; x < WIDTH; x++)
-                    SetField(x, i, GetField(x, i - 1).Shape);
+                    SetField(x, i, GetFieldShape(x, i - 1));
             }
         }
 
-        public void ClearGrid()
-        {
-            for (int x = 0; x < WIDTH; x++)
-            {
-                for (int y = 0; y < HEIGHT; y++)
-                    SetField(x, y, null);
-            }
-
-        }
 
 
-        public void PrepareGrids()
+
+        private void PrepareGrids()
         {
             // MAIN GRID
             for (int x = 0; x < WIDTH; x++)

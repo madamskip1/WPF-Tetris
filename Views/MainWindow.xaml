@@ -8,13 +8,14 @@
         Title="Tetris" Height="490" Width="450" MinWidth="{Binding Width, ElementName=window}" MinHeight="{Binding Height, ElementName=window}" MaxWidth="{Binding Width, ElementName=window}" MaxHeight="{Binding Height, ElementName=window}">
     <Grid>
 
+        
         <Grid  x:Name="MainField"/>
         <Grid   x:Name="NextField" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
         <ListView Focusable="False" x:Name="ResultsList" Margin="240,280,0,0" Width="180" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Points" DisplayMemberBinding="{Binding Result}"/>
+                    <GridViewColumn Header="Points" DisplayMemberBinding="{Binding ResultValue}"/>
                     <GridViewColumn Header="Data" DisplayMemberBinding="{Binding DateTimeString}"/>
                 </GridView>
             </ListView.View>
@@ -41,6 +42,34 @@
             <Label Grid.Row="2" Grid.Column="1" Content="{Binding Rows3}"/>
             <Label Grid.Row="3" Grid.Column="1" Content="{Binding Rows2}"/>
             <Label Grid.Row="4" Grid.Column="1" Content="{Binding Rows1}"/>
+        </Grid>
+
+        <Grid x:Name="InfoGrid" Margin="20,100,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="MainInfo" FontSize="35" Foreground="Red" TextAlignment="Center" Margin="0,0,0,50">Tetromino</TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" TextAlignment="Center" FontSize="18" Foreground="#FFC92140" Margin="0,0,0,25">Press SPACE to Start</TextBlock>
+            <Grid Grid.Row="2" Grid.Column="0" TextBlock.FontSize="13">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" TextAlignment="Center" >LEFT/RIGHT to move Tetromino</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0" TextAlignment="Center">UP to rotate Tetromino</TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="0" TextAlignment="Center">DOWN to move down Tetromino</TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="0" TextAlignment="Center">SPACE to fix down Tetromino</TextBlock>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

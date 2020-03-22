@@ -10,7 +10,7 @@ namespace _PAIN__WPF___Tetris.Models
     class Game
     {
 
-
+        MainWindow MainWindow;
         private Tetromino Cur { get; set; }
         private Tetromino Next { get; set; }
         public Grid Grid { get; set; }
@@ -28,8 +28,9 @@ namespace _PAIN__WPF___Tetris.Models
         public enum GameStates { NOTSTARTED, RUNNING, GAMEOVER }
         private GameStates GameState;
 
-        public Game()
+        public Game(MainWindow mainWindow)
         {
+            MainWindow = mainWindow;
             Grid = new Grid();
             GameState = GameStates.NOTSTARTED;
             Random = new Random();
@@ -81,6 +82,7 @@ namespace _PAIN__WPF___Tetris.Models
 
         public void Start()
         {
+
             Grid.ClearGrid();
             Cur = RandomTetromino();
             Next = RandomTetromino();
@@ -88,6 +90,8 @@ namespace _PAIN__WPF___Tetris.Models
             DrawTetromino();
             Grid.SetNextTetromino(Next);
             RowsCleared.Reset();
+
+            MainWindow.SetInfoVisibility(false);
 
             GameState = GameStates.RUNNING;
             previouseDateTime = DateTime.Now;
@@ -224,7 +228,8 @@ namespace _PAIN__WPF___Tetris.Models
         private void GameOver()
         {
             GameState = GameStates.GAMEOVER;
-            MessageBox.Show("Game Over, Leszczu");
+            MainWindow.SetMainInfoText("Game Over");
+            MainWindow.SetInfoVisibility(true);
 
             Results.AddResult(RowsCleared.TotalPoints, DateTime.Now);
         }
