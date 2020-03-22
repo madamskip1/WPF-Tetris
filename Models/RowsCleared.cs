@@ -14,17 +14,15 @@ namespace _PAIN__WPF___Tetris.Models
         public int Rows3 { get; private set; }
         public int Rows4 { get; private set; }
 
-        public int TotalPoints
-        {
-            get
-            {
-                return Rows1 + Rows2 * 2 + Rows3 * 3 + Rows4 * 4;
-            }
-        }
 
         public RowsCleared()
         {
             Reset();
+        }
+
+        public int GetTotalPoints()
+        {
+            return Rows1 + Rows2 * 2 + Rows3 * 3 + Rows4 * 4;
         }
 
         public void Cleared(int rowsNumber)

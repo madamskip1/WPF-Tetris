@@ -67,13 +67,12 @@ namespace _PAIN__WPF___Tetris.Models
         private void StartPosition()
         {
             Position =  new Position();
-            Position.X = Grid.WIDTH / 2;
+            Position.X = ViewModels.ViewModelGrid.WIDTH / 2;
             Position.X -= 2;
             Position.Y = -3;
 
             switch(Shape)
-            { 
-                
+            {
                 case Tetromino.Shapes.O:
                     Position.Y = -2;
                     Position.X += 1;
