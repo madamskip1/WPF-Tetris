@@ -3,19 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:_PAIN__WPF___Tetris"
+        xmlns:local="clr-namespace:_PAIN__WPF___Tetris" xmlns:VievModels="clr-namespace:_PAIN__WPF___Tetris.ViewModels"
         mc:Ignorable="d"
         Title="Tetris" Height="510" Width="450" MinWidth="{Binding Width, ElementName=window}" MinHeight="{Binding Height, ElementName=window}" MaxWidth="{Binding Width, ElementName=window}" MaxHeight="{Binding Height, ElementName=window}">
+
     <Grid>
         <Grid Margin="10, 10, 0, 0">
-            <ItemsControl x:Name="MainField" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+            <ItemsControl ItemsSource="{Binding MainGrid}" x:Name="MainField" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
         </Grid>
 
         <Grid Margin="240,10,0,0">
-            <ItemsControl x:Name="NextField" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+            <ItemsControl ItemsSource="{Binding NextGrid}"  x:Name="NextField" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
         </Grid>
 
-        <ListView Focusable="False" x:Name="ResultsList" Margin="240,280,0,0" Width="180" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <ListView ItemsSource="{Binding Results}" Focusable="False" x:Name="ResultsList" Margin="240,280,0,0" Width="180" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Points" DisplayMemberBinding="{Binding ResultValue}"/>
@@ -23,7 +24,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Grid Margin="260,130,0,0" x:Name="RowsClearedGrid">
+        <Grid Margin="260,130,0,0" x:Name="RowsClearedGrid" DataContext="{Binding RowsCleared}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
@@ -47,7 +48,7 @@
             <Label Grid.Row="4" Grid.Column="1" Content="{Binding Rows1}"/>
         </Grid>
 
-        <Grid x:Name="InfoGrid" Margin="20,100,0,0">
+        <Grid Visibility="{Binding InfoVisible}" x:Name="InfoGrid" Margin="20,100,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
@@ -79,7 +80,7 @@
     <Window.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
             <Border BorderThickness="1" BorderBrush="Gray">
-                <TextBlock Background="{Binding CosColor}" Height="20" Width="20" ></TextBlock>
+                <TextBlock Background="{Binding BlockColor}" Height="20" Width="20" ></TextBlock>
             </Border>
         </DataTemplate>
 

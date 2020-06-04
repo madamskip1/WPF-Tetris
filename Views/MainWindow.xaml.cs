@@ -12,34 +12,23 @@ namespace _PAIN__WPF___Tetris
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ViewModels.ViewModelMainWindow viewModelMainWindow;
-
+        private ViewModels.ViewModelMainWindow vmmw;
         public MainWindow()
         {
             InitializeComponent();
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            viewModelMainWindow = new ViewModels.ViewModelMainWindow(this);
+            vmmw = new ViewModels.ViewModelMainWindow();
+            DataContext = vmmw;
 
-            
 
             InitKeyDownEvents();
-        }
-
-        public void SetMainInfoText(string text)
-        {
-            MainInfo.Text = text;
-        }
-
-        public void SetInfoVisibility(bool visibility)
-        {
-            InfoGrid.Visibility = (visibility ? Visibility.Visible : Visibility.Hidden);
         }
 
         private void InitKeyDownEvents()
         {
             this.KeyDown += (sender, e) =>
             {
-                viewModelMainWindow.KeyDownEvents(e);
+                vmmw.KeyDownEvents(e);
             };
         }
     }

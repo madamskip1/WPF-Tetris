@@ -25,9 +25,16 @@ namespace _PAIN__WPF___Tetris.Models
             get { return Tetromino.getShapeMediaColor(Shape); }
         }
 
+        public String BlockColor
+        { 
+            get { return Tetromino.getStringColor(Shape); }
+        }
+
+
         protected void OnPropertyChanged()
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Color"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlockColor"));
         }
     }
 }

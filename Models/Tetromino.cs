@@ -46,6 +46,12 @@ namespace _PAIN__WPF___Tetris.Models
             return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
+        public static String getStringColor(Shapes? _shape)
+        {
+            Color c = getShapeColor(_shape);
+            return string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", c.A, c.R, c.G, c.B);
+        }
+
         public int GetTopPosition()
         {
             int[,] pattern = Rotation.GetCurPattern();
@@ -67,7 +73,7 @@ namespace _PAIN__WPF___Tetris.Models
         private void StartPosition()
         {
             Position =  new Position();
-            Position.X = ViewModels.ViewModelGrid.WIDTH / 2;
+            Position.X = Logic.GridLogic.WIDTH / 2;
             Position.X -= 2;
             Position.Y = -3;
 
@@ -80,12 +86,12 @@ namespace _PAIN__WPF___Tetris.Models
                 case Tetromino.Shapes.I:
                     Position.Y = -2;
                     break;
-                case Tetromino.Shapes.T: 
-                case Tetromino.Shapes.S: 
-                case Tetromino.Shapes.Z: 
-                case Tetromino.Shapes.J: 
-                case Tetromino.Shapes.L:
-                    break;
+                //case Tetromino.Shapes.T: 
+                //case Tetromino.Shapes.S: 
+                //case Tetromino.Shapes.Z: 
+                //case Tetromino.Shapes.J: 
+                //case Tetromino.Shapes.L:
+                //    break;
             }
         }
 

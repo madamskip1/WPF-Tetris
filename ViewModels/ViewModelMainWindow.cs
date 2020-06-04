@@ -1,48 +1,59 @@
-﻿using _PAIN__WPF___Tetris.Models;
-using System;
+﻿using System;
+using _PAIN__WPF___Tetris;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace _PAIN__WPF___Tetris.ViewModels
 {
-    class ViewModelMainWindow
+    class ViewModelMainWindow : System.ComponentModel.INotifyPropertyChanged
     {
-        public static Color BORDER_COLOR = Color.FromRgb(196, 196, 196);
-        public const int CELL_SIZE = 20;
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-
-        private ViewModelGame viewModelGame;
-        private ViewModelGrid viewModelGrid;
-        private MainWindow mainWindow;
-        private Models.Results results;
-
-        public enum Keys { LEFT, RIGHT, UP, DOWN, SPACE, ESC }
-
-
-        public ViewModelMainWindow(MainWindow mainWin)
+        public List<List<Models.Cell>> MainGrid { get { return _MainGrid; } }
+        public List<List<Models.Cell>> NextGrid  { get { return _NextGrid; } }
+        public ObservableCollection<Result> Results { get { return _Results.ResultsValues; } }
+        public Models.RowsCleared RowsCleared { get { return _RowsCleared;  } } 
+        public String InfoVisible
         {
-            viewModelGame = new ViewModelGame(mainWin);
-            viewModelGrid = new ViewModelGrid();
-            viewModelGame.SetGrid(viewModelGrid);
-            mainWindow = mainWin;
+            get
+            {
+                if (_State == Models.Game.GameStates.RUNNING)
+                    return "Hidden";
+                else
+                    return "Visible";
+            }
+        }
 
-            results = new Models.Results();
-            viewModelGame.SetResults(results);
-
-            mainWindow.ResultsList.ItemsSource = results.ResultsValues;
-            mainWindow.RowsClearedGrid.DataContext = viewModelGame.RowsCleared;
-
-
-            mainWindow.MainField.ItemsSource = PrepareList(viewModelGrid.GetFields(), ViewModelGrid.WIDTH, ViewModelGrid.HEIGHT);
-            mainWindow.NextField.ItemsSource = PrepareList(viewModelGrid.GetNextFields(), ViewModelGrid.NEXT_SIZE, ViewModelGrid.NEXT_SIZE);
+        private List<List<Models.Cell>> _MainGrid;
+        private List<List<Models.Cell>> _NextGrid;
+        private Models.Results _Results;
+        private Models.RowsCleared _RowsCleared;
+        private Models.Game.GameStates _State;
 
 
-            TestResults();
+
+
+
+        private Logic.GameLogic Game;
+
+        public ViewModelMainWindow()
+        {
+            Game = new Logic.GameLogic();
+            Logic.GridLogic Grid = Game.GetGrid();
+
+            _Results = Game.GetResults();
+            _RowsCleared = Game.GetRowsCleared();
+            _MainGrid = PrepareList(Grid.GetFields(), Logic.GridLogic.WIDTH, Logic.GridLogic.HEIGHT);
+            _NextGrid = PrepareList(Grid.GetNextFields(), Logic.GridLogic.NEXT_SIZE, Logic.GridLogic.NEXT_SIZE);
+            _State = Game.GetState();
+
+           TestResults();
         }
 
 
@@ -51,34 +62,38 @@ namespace _PAIN__WPF___Tetris.ViewModels
             switch (e.Key)
             {
                 case Key.Left:
-                    viewModelGame.TetrominoMove(ViewModelGame.MoveDirection.LEFT);
+                    Game.TetrominoMove(Logic.GameLogic.MoveDirection.LEFT);
                     break;
                 case Key.Right:
-                    viewModelGame.TetrominoMove(ViewModelGame.MoveDirection.RIGHT);
+                    Game.TetrominoMove(Logic.GameLogic.MoveDirection.RIGHT);
                     break;
                 case Key.Up:
-                    viewModelGame.TetrominoRotation();
+                    Game.TetrominoRotation();
                     break;
                 case Key.Down:
-                    viewModelGame.TetrominoSingleRowDown();
+                    Game.TetrominoSingleRowDown();
                     break;
                 case Key.Space:
-                    if (viewModelGame.IsRunning())
-                        viewModelGame.TetrominoDown();
+                    if (Game.IsRunning())
+                        Game.TetrominoDown();
                     else
-                        viewModelGame.Start();
+                    {
+                        Game.Start();
+                        _State = Game.GetState();
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InfoVisible"));
+                    }
                     break;
             }
 
         }
 
-     
+
 
         private void TestResults()
         {
-            results.AddResult(234, DateTime.Now);
-            results.AddResult(1230, DateTime.Now);
-            results.AddResult(20, DateTime.Now);
+            _Results.AddResult(234, DateTime.Now);
+            _Results.AddResult(1230, DateTime.Now);
+            _Results.AddResult(20, DateTime.Now);
 
         }
 

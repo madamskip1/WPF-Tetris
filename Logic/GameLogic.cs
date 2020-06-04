@@ -4,14 +4,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace _PAIN__WPF___Tetris.ViewModels
+namespace _PAIN__WPF___Tetris.Logic
 {
-    class ViewModelGame
+    class GameLogic
     {
         public static TimeSpan SPEED = TimeSpan.FromSeconds(0.4);
 
-        private MainWindow MainWindow;
-        private ViewModelGrid Grid;
+
+        private GridLogic Grid;
         private Models.Game Game;
         private Models.Results Results;
         public Models.RowsCleared RowsCleared { get; private set; }
@@ -23,12 +23,13 @@ namespace _PAIN__WPF___Tetris.ViewModels
         private readonly Random Random;
         
 
-        public ViewModelGame(MainWindow mainWin)
+        public GameLogic()
         {
-            MainWindow = mainWin;
             Game = new Models.Game();
             Random = new Random();
             RowsCleared = new Models.RowsCleared();
+            Grid = new GridLogic();
+            Results = new Models.Results();
         }
 
 
@@ -40,21 +41,32 @@ namespace _PAIN__WPF___Tetris.ViewModels
             DrawTetromino();
             Grid.SetNextTetromino(Game.Next.Rotation.GetCurPattern(), Game.Next.Shape);
             RowsCleared.Reset();
-            MainWindow.SetInfoVisibility(false);
             Game.GameState = Models.Game.GameStates.RUNNING;
             previouseDateTime = DateTime.Now;
             MainLoop();
         }
 
-        public void SetResults(Models.Results results)
+
+        public Models.Results GetResults()
         {
-            Results = results;
+            return Results;
         }
 
-        public void SetGrid(ViewModelGrid grid)
+        public Logic.GridLogic GetGrid()
         {
-            Grid = grid;
+            return Grid;
         }
+
+        public Models.RowsCleared GetRowsCleared()
+        {
+            return RowsCleared;
+        }
+
+        public Models.Game.GameStates GetState()
+        {
+            return Game.GameState;
+        }
+
 
         public bool IsRunning()
         {
@@ -183,8 +195,6 @@ namespace _PAIN__WPF___Tetris.ViewModels
         private void GameOver()
         {
             Game.GameState = Models.Game.GameStates.GAMEOVER;
-            MainWindow.SetMainInfoText("Game Over");
-            MainWindow.SetInfoVisibility(true);
             Results.AddResult(RowsCleared.GetTotalPoints(), DateTime.Now);
         }
 
