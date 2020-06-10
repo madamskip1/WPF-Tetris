@@ -53,6 +53,7 @@ namespace _PAIN__WPF___Tetris.Logic
         }
 
         public Logic.GridLogic GetGrid()
+<<<<<<< HEAD:Logic/GameLogic.cs
         {
             return Grid;
         }
@@ -67,6 +68,22 @@ namespace _PAIN__WPF___Tetris.Logic
             return Game.GameState;
         }
 
+=======
+        {
+            return Grid;
+        }
+
+        public Models.RowsCleared GetRowsCleared()
+        {
+            return RowsCleared;
+        }
+
+        public Models.Game.GameStates GetState()
+        {
+            return Game.GameState;
+        }
+
+>>>>>>> master:ViewModels/ViewModelGame.cs
 
         public bool IsRunning()
         {
