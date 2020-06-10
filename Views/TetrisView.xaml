@@ -1,4 +1,3 @@
-<<<<<<< HEAD:Views/TetrisView.xaml
 ﻿<UserControl x:Class="_PAIN__WPF___Tetris.Views.TetrisView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -20,23 +19,6 @@
         <Grid Margin="10, 10, 0, 0">
             <ItemsControl ItemsSource="{Binding MainGrid}" x:Name="MainField" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
         </Grid>
-
-=======
-﻿<Window x:Name="window" x:Class="_PAIN__WPF___Tetris.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:_PAIN__WPF___Tetris" xmlns:VievModels="clr-namespace:_PAIN__WPF___Tetris.ViewModels"
-        mc:Ignorable="d"
-        Title="Tetris" Height="510" Width="450" MinWidth="{Binding Width, ElementName=window}" MinHeight="{Binding Height, ElementName=window}" MaxWidth="{Binding Width, ElementName=window}" MaxHeight="{Binding Height, ElementName=window}">
-
-    <Grid>
-        <Grid Margin="10, 10, 0, 0">
-            <ItemsControl ItemsSource="{Binding MainGrid}" x:Name="MainField" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
-        </Grid>
-
->>>>>>> master:Views/MainWindow.xaml
         <Grid Margin="240,10,0,0">
             <ItemsControl ItemsSource="{Binding NextGrid}"  x:Name="NextField" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
         </Grid>
@@ -102,11 +84,7 @@
         </Grid>
     </Grid>
 
-<<<<<<< HEAD:Views/TetrisView.xaml
     <UserControl.Resources>
-=======
-    <Window.Resources>
->>>>>>> master:Views/MainWindow.xaml
         <DataTemplate x:Key="DataTemplate_Level2">
             <Border BorderThickness="1" BorderBrush="Gray">
                 <TextBlock Background="{Binding BlockColor}" Height="20" Width="20" ></TextBlock>
@@ -122,12 +100,5 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </DataTemplate>
-
-<<<<<<< HEAD:Views/TetrisView.xaml
     </UserControl.Resources>
 </UserControl>
-=======
-    </Window.Resources>
-    
-</Window>
->>>>>>> master:Views/MainWindow.xaml
