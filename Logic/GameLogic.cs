@@ -53,6 +53,7 @@ namespace _PAIN__WPF___Tetris.Logic
         }
 
         public Logic.GridLogic GetGrid()
+<<<<<<< HEAD:Logic/GameLogic.cs
         {
             return Grid;
         }
@@ -67,6 +68,22 @@ namespace _PAIN__WPF___Tetris.Logic
             return Game.GameState;
         }
 
+=======
+        {
+            return Grid;
+        }
+
+        public Models.RowsCleared GetRowsCleared()
+        {
+            return RowsCleared;
+        }
+
+        public Models.Game.GameStates GetState()
+        {
+            return Game.GameState;
+        }
+
+>>>>>>> master:ViewModels/ViewModelGame.cs
 
         public bool IsRunning()
         {
@@ -90,6 +107,9 @@ namespace _PAIN__WPF___Tetris.Logic
 
         public void TetrominoMove(MoveDirection dir)
         {
+            if (!IsRunning())
+                return;
+
             Models.Position newPosition = new Models.Position(Game.Current.Position.X, Game.Current.Position.Y);
 
             if (dir == MoveDirection.LEFT)
@@ -107,6 +127,9 @@ namespace _PAIN__WPF___Tetris.Logic
 
         public void TetrominoRotation()
         {
+            if (!IsRunning())
+                return;
+
             int[,] newPattern = Game.Current.Rotation.GetNextPattern();
             RemoveTetrominoFromGrid();
 
@@ -117,7 +140,10 @@ namespace _PAIN__WPF___Tetris.Logic
         }
 
         public void TetrominoDown()
-        {
+        { 
+            if (!IsRunning())
+                return;
+
             RemoveTetrominoFromGrid();
             Models.Position newPosition = new Models.Position(Game.Current.Position.X, Game.Current.Position.Y + 1);
 
@@ -133,6 +159,10 @@ namespace _PAIN__WPF___Tetris.Logic
 
         public void TetrominoSingleRowDown()
         {
+            if (!IsRunning())
+                return;
+
+
             RemoveTetrominoFromGrid();
 
             Models.Position newPosition = new Models.Position(Game.Current.Position.X, Game.Current.Position.Y + 1);
