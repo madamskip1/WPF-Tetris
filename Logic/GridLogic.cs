@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace _PAIN__WPF___Tetris.ViewModels
+namespace _PAIN__WPF___Tetris.Logic
 {
-    class ViewModelGrid
+    class GridLogic
     {
         public const int WIDTH = 10;
         public const int HEIGHT = 20;
@@ -13,7 +13,7 @@ namespace _PAIN__WPF___Tetris.ViewModels
 
         private Models.Grid Grid;
 
-        public ViewModelGrid()
+        public GridLogic()
         {
             Grid = new Models.Grid(WIDTH, HEIGHT, NEXT_SIZE);
         }
